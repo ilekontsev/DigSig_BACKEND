@@ -20,8 +20,8 @@ function getTokens(user) {
 module.exports.login = async (req, res) => {
   try {
     const result = await Users.findOne({
-      username: req.body.username,
-      pass: req.body.password,
+      email: req.body.login,
+      password: req.body.password,
     })
     if (!result) {
       res.status(404).send('username or password invalid')
@@ -58,9 +58,14 @@ module.exports.refreshTokens = async (req, res) => {
 
 module.exports.register = async (req, res) => {
   try {
+    console.log(req)
     const result = await Users.create({
-      username: req.body.username,
-      pass: req.body.password,
+      firstName: req.body.firstName,
+      middleName: req.body.middleName,
+      lastName: req.body.lastName,
+      email: req.body.email,
+      telephone:req.body.telephone,
+      password: req.body.password,
     })
     const { token, refToken } = getTokens(result)
     const tokenData = {

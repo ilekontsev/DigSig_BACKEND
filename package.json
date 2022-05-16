@@ -1,22 +1,16 @@
 {
-  "name": "vanya_doc",
+  "name": "DigSig",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon src/server.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/SmSergey/node_preset.git"
-  },
+
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/SmSergey/node_preset/issues"
-  },
-  "homepage": "https://github.com/SmSergey/node_preset#readme",
   "dependencies": {
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
@@ -24,6 +18,7 @@
     "express-custom-error": "^1.9.4",
     "helmet": "^5.0.2",
     "jsonwebtoken": "^8.5.1",
-    "mongoose": "^6.3.1"
+    "mongoose": "^6.3.1",
+    "nodemon": "^2.0.16"
   }
 }

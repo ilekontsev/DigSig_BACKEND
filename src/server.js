@@ -3,7 +3,7 @@ inject()
 
 const mongoose = require('mongoose')
 
-mongoose.connect('mongodb://localhost:27017/fellini_backend', {
+mongoose.connect('mongodb://127.0.0.1:27017/DigSigDB', {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
@@ -18,7 +18,6 @@ const express = require('express')
 const cookieParser = require('cookie-parser')
 const cors = require('cors')
 const helmet = require('helmet')
-const logger = require('./util/logger')
 
 const PORT = 3000
 const app = express()
@@ -39,7 +38,7 @@ app.use('/', (req,res, next) => {
     next();
 })
 app.use('/', require('./routes/userRouter'))
-app.use('/', require('./routes/bookingRouter'))
+
 
 app.use('*', (req, res) => {
   res.status(404).json({ status: false, message: 'Endpoint Not Found' })
