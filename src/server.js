@@ -34,10 +34,11 @@ app.use(helmet())
 
 app.use('/', (req,res, next) => {
     console.log(req.url + " " +  req.method);
-
     next();
 })
+app.use('/', require('./routes/logicSignRoute') )
 app.use('/', require('./routes/userRouter'))
+app.use('/', require('./routes/mailRouter'))
 
 
 app.use('*', (req, res) => {
