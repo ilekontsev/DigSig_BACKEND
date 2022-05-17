@@ -1,9 +1,7 @@
-const router = require('express').Router()
-const logicSignKeysController = require('../controllers/logicSignKeysController')
+const router = require("express").Router();
+const logicSignKeysController = require("../controllers/logicSignKeysController");
 
+router.post("/saveKey", logicSignKeysController.saveKeyAndMethod);
+router.get("/getPublicKey", logicSignKeysController.getPublicKey);
 
-
-router.post('/saveKey', logicSignKeysController.saveKeys)
-
-
-module.exports = router
+module.exports = router;
