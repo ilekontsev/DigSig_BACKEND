@@ -8,6 +8,7 @@ const UsersSchema = mongoose.Schema(
     telephone: String,
     email: String,
     password: String,
+    verificationCode: String,
   },
   { versionKey: false }
 )
