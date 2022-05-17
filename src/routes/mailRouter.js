@@ -1,7 +1,8 @@
 const router = require('express').Router()
-const sendMail = require('../controllers/sendMailController')
+const sendMailController = require('../controllers/sendMailController')
 
-router.post('/sendMail', sendMail.sendMailCode)
+router.get('/sendMailCode/:email', sendMailController.sendMailCode)
+router.post('/users/verify', sendMailController.verifyCode)
 
 
 module.exports = router
