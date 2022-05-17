@@ -1,6 +1,7 @@
 const Users = require("../models/userSchema");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+const crypto = require('crypto');
 
 const TOKEN_SECRET =
 '924ce4af5efec064e4ddb904ee4d71f0b20adf735e5d71f86289bfd3d7cc8dcaadeaee6ab1cfde9e1fa1b35957f74c4c796fefb31ef279c4dc474966f052d185';
@@ -29,6 +30,10 @@ module.exports.login = async (req, res) => {
     });
     if (!result) {
       return res.status(404).send("username or password invalid");
+    }
+    
+    if(result.verificationCode !== null){
+      return res.status(400).send("you have to verify your email");
     }
 
     const pass = await bcrypt.compare(params.password, result.password);
@@ -79,15 +84,73 @@ module.exports.register = async (req, res) => {
       return res.status(400).send('user exist')
     }
     params.password = await bcrypt.hash(params.password, 7);
-    const result = await Users.create(params);
-    const { token, refToken } = getTokens(result);
-    const tokenData = {
-      token: token,
-      refToken: refToken,
-      userId: result._id,
-    };
-    res.send(JSON.stringify(tokenData));
+    const verificationCode = crypto.randomUUID();
+    const result = await Users.create(
+      {
+        ...params,
+        verificationCode: verificationCode,
+      });
+
+    sendEmail(verificationCode);
+  
+    res.status(200).send("done");
   } catch (e) {
     res.status(401).send(e);
   }
 };
+
+module.exports.verifyCode = async (req, res) => {
+  try {
+    const code = req.params.verificationCode;
+    if(!code) {
+      console.log(req);
+      return res.status(400).send("you must specify code in url");
+    }
+
+    const user = await Users.findOne({verificationCode: code});
+    if(!user || !user.verificationCode) {
+      return res.status(404).send("already confired, or invalid code");
+    }
+    
+    await Users.update({verificationCode: null});
+    
+    return res.status(200).send("verifiyed!, you can login now");
+
+  } catch(err) {
+    console.error("step: code verification " +  err);
+    return res.status(500).send("something went wrong");
+  }
+}
+
+
+const sendEmail = async(code) => {
+  try {
+
+     const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: 'sendcode123@gmail.com',
+          pass: 'ljrpjvkisoxjtvav'
+        }
+      });
+      
+      const mailOptions = {
+        from: 'sendcode123@gmail.com',
+        to: 'sijedap204@akapple.com',
+        subject: 'Sending Email using Node.js',
+        text: code
+      };
+      
+      transporter.sendMail(mailOptions, function(error, info){
+        if (error) {
+          console.log(error);
+        } else {
+          console.log('Email sent: ' + info.response);
+        }
+      });
+
+  }catch(err) {
+    console.error("error with sending email " + err);
+    return err;
+  }
+}
