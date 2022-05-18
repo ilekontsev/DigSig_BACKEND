@@ -48,7 +48,6 @@ module.exports.sendMailCode = async (req, res) => {
       }
     });
   } catch (err) {
-    console.log(err);
     return res.status(404).send("1no verification code, plese resend again");
   }
 };
@@ -60,7 +59,6 @@ module.exports.notification = (req, res) => {};
 module.exports.verifyCode = async (req, res) => {
   try {
     const params = req.body;
-    console.log(params)
     if (!params.code || !params.email) {
       return res.status(400).send("you must specify code");
     }
