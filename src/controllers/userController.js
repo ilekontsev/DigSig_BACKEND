@@ -44,7 +44,6 @@ module.exports.login = async (req, res) => {
     };
     res.send(JSON.stringify(tokenData));
   } catch (e) {
-    console.log(e);
     res.status(401).send(e);
   }
 };
@@ -80,16 +79,17 @@ module.exports.register = async (req, res) => {
       return res.status(400).send("user exist");
     }
     params.password = await bcrypt.hash(params.password, 7);
-    const verificationCode = crypto.randomUUID();
-    const result = await Users.create({
-      ...params,
-      verificationCode: verificationCode,
-    });
+    const result = await Users.create(params);
 
-    sendEmail(verificationCode);
-
-    res.status(200).send("done");
+    const { token, refToken } = getTokens(result);
+    const tokenData = {
+      token: token,
+      refToken: refToken,
+      userId: result._id,
+    };
+    res.status(200).send(JSON.stringify(tokenData));
   } catch (e) {
+    console.log(e)
     res.status(401).send(e);
   }
 };
